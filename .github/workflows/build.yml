@@ -25,12 +25,17 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
 
+    - name: Clean broken apt sources
+      run: |
+        sudo rm -f /etc/apt/sources.list.d/openjdk-r-ubuntu-ppa*.list
+        sudo rm -f /etc/apt/sources.list.d/*.save
+        sudo apt-get update
+
     - name: Install dependencies
       run: |
-        sudo apt-get update
         sudo apt-get install -y \
           python3-pip \
-          build-extras \
+          build-essential \
           ccache \
           libffi-dev \
           libssl-dev \
@@ -47,14 +52,11 @@ jobs:
 
     - name: Install Buildozer and dependencies
       run: |
-        pip install --upgrade pip
-        pip install --upgrade buildozer cython==0.29.36
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade buildozer cython==0.29.36
 
     - name: Build with Buildozer
-      uses: ArtemSBulgakov/buildozer-action@v1
-      id: buildozer
-      with:
-        command: buildozer -v android debug
+      run: buildozer -v android debug
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
