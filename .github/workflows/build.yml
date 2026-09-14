@@ -49,9 +49,20 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install --upgrade cython==0.29.36 buildozer
 
+      - name: Install Android SDK components
+        run: |
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          curl -fsSL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmdline-tools.zip
+          unzip -o /tmp/cmdline-tools.zip -d "$ANDROID_HOME/cmdline-tools"
+          mkdir -p "$ANDROID_HOME/cmdline-tools/latest"
+          shopt -s dotglob
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools"/* "$ANDROID_HOME/cmdline-tools/latest/" 2>/dev/null || true
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;27.3.13750724" "cmdline-tools;latest"
+
       - name: Build with Buildozer
         run: |
-          mkdir -p "$ANDROID_HOME"
+          export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/build-tools/33.0.2:$PATH"
           buildozer -v android debug
 
       - name: Upload APK artifact
