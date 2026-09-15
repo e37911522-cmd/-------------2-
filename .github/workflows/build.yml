@@ -10,8 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     env:
-      ANDROID_HOME: ${{ github.workspace }}/android-sdk
-      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
+      ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
+      ANDROID_SDK_ROOT: /home/runner/.buildozer/android/platform/android-sdk
       JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
 
     steps:
@@ -57,12 +57,19 @@ jobs:
           mkdir -p "$ANDROID_HOME/cmdline-tools/latest"
           shopt -s dotglob
           mv "$ANDROID_HOME/cmdline-tools/cmdline-tools"/* "$ANDROID_HOME/cmdline-tools/latest/" 2>/dev/null || true
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platform-tools" \
+            "platforms;android-33" \
+            "build-tools;33.0.2" \
+            "build-tools;37.0.0" \
+            "ndk;27.3.13750724" \
+            "cmdline-tools;latest"
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;27.3.13750724" "cmdline-tools;latest"
 
       - name: Build with Buildozer
         run: |
-          export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/build-tools/33.0.2:$PATH"
+          export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/build-tools/37.0.0:$PATH"
           buildozer -v android debug
 
       - name: Upload APK artifact
