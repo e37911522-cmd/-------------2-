@@ -22,13 +22,13 @@ source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 
 # (list) Application requirements
-requirements = python3,kivy
+requirements = python3,kivy==2.3.0
 
 # (str) Supported orientations
 orientation = portrait
 
 # (list) List of permissions
-android.permissions = INTERNET, CAMERA
+android.permissions = INTERNET
 
 [buildozer]
 
@@ -41,17 +41,12 @@ bin_dir = bin
 # -----------------------------------------------------------------------------
 # Android specific settings
 
-# Версия Android SDK, под которую собирается приложение
-android.api = 33
+# Стабильная комбинация для GitHub Actions
+android.api = 31
+android.minapi = 21
+android.accept_sdk_licenses = True
 
-# Минимальная поддерживаемая версия Android
-android.minapi = 24
-
-# Фиксируем стабильную версию NDK
+# НДК и архитектура под простое приложение
 android.ndk = 27.3.13750724
-
-# (list) The android arch to build for
 android.archs = arm64-v8a
-
-# (bool) Enable AndroidX support
 android.androidx = True

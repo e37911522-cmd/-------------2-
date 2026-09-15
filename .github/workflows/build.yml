@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    timeout-minutes: 180
     runs-on: ubuntu-22.04
     env:
       ANDROID_HOME: /home/runner/.buildozer/android/platform/android-sdk
@@ -72,6 +73,7 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/build-tools/37.0.0:$PATH"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
           buildozer android debug
 
       - name: Upload APK artifact
