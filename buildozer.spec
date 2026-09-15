@@ -51,7 +51,7 @@ android.minapi = 24
 android.ndk = 27.3.13750724
 
 # (list) The android arch to build for
-android.archs = arm64-v8a, armeabi-v7a
+android.archs = arm64-v8a
 
 # (bool) Enable AndroidX support
 android.androidx = True
